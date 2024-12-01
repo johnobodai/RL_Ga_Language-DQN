@@ -9,18 +9,20 @@ class GaLanguageEnv(gym.Env):
     """
     def __init__(self):
         super(GaLanguageEnv, self).__init__()
+        
+        # Grid size of 5x5 (25 cells)
         self.grid_size = (5, 5)
-
-        # Define action space (4 directions: up, down, left, right)
+        
+        # Define action space: 4 directions (up, down, left, right)
         self.action_space = spaces.Discrete(4)
-
-        # Define observation space (5x5 grid: 25 states)
+        
+        # Observation space: Each state corresponds to a position on the 5x5 grid (25 states)
         self.observation_space = spaces.Discrete(25)
 
         # Initial position of the agent (top-left corner)
         self.agent_position = 0
 
-        # Define grid layout with rewards
+        # Grid layout with rewards
         # -1: empty cell, 10: resource, 50: goal, -5: distraction
         self.grid = np.array([
             [-1, -1, -1, -1, 10],
@@ -36,6 +38,10 @@ class GaLanguageEnv(gym.Env):
         # Goal position (bottom-right corner)
         self.goal_position = 24
 
+        # Maximum number of steps before termination (optional)
+        self.max_steps = 20
+        self.step_count = 0
+
     def seed(self, seed=None):
         """
         Set the random seed for reproducibility.
@@ -49,6 +55,7 @@ class GaLanguageEnv(gym.Env):
         """
         self.agent_position = 0
         self.path.fill(0)  # Clear the path tracking
+        self.step_count = 0  # Reset step count
         return self.agent_position
 
     def step(self, action):
@@ -80,6 +87,14 @@ class GaLanguageEnv(gym.Env):
         # Check if the agent has reached the goal
         done = new_position == self.goal_position
 
+        # Increment step count
+        self.step_count += 1
+
+        # Termination condition if max steps are exceeded
+        if self.step_count >= self.max_steps:
+            done = True
+
+        # Update the agent's position
         self.agent_position = new_position
 
         return self.agent_position, reward, done, {}
@@ -112,4 +127,10 @@ class GaLanguageEnv(gym.Env):
         print("10: Resource")
         print("-5: Distraction")
         print("50: Goal (Ojekoo)\n")
+
+    def set_goal_position(self, goal_position):
+        """
+        Update the goal position (optional).
+        """
+        self.goal_position = goal_position
 
