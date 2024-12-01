@@ -1,62 +1,30 @@
-# train.py
 import gym
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.optimizers import Adam
-from rl.agents.dqn import DQNAgent
-from rl.policy import EpsGreedyQPolicy
-from rl.memory import SequentialMemory
-from ga_language_env import GaLanguageEnv  # Import custom environment
+from stable_baselines3 import DQN
+from stable_baselines3.common.env_util import make_vec_env
+from ga_language_env import GaLanguageEnv
 
-# Define the neural network for Q-value approximation
-def build_model(state_size, action_size):
-    model = Sequential()
-    model.add(Dense(24, input_dim=state_size, activation='relu'))
-    model.add(Dense(24, activation='relu'))
-    model.add(Dense(action_size, activation='linear'))  # Q-values for each action
-    model.compile(loss='mse', optimizer=Adam(learning_rate=0.001))
-    return model
+# Create a vectorized environment for stable-baselines3
+env = make_vec_env(lambda: GaLanguageEnv(), n_envs=1)
 
-# Set up environment
-env = GaLanguageEnv()
+# Define the DQN model using Stable-Baselines3
+model = DQN(
+    "MlpPolicy",  # MLP-based policy
+    env,           # The custom environment
+    verbose=1,     # Show training progress
+    tensorboard_log="./dqn_ga_language_tensorboard/",  # For monitoring
+    learning_starts=1000,  # Number of steps before starting training
+    buffer_size=50000,  # Size of experience replay buffer
+    exploration_fraction=0.1,  # Fraction of total steps for exploration
+    exploration_final_eps=0.05,  # Final value for exploration probability
+    policy_kwargs={"net_arch": [64, 64]},  # Neural network architecture
+)
 
-# Define state and action size based on environment
-state_size = env.observation_space.n  # 25 grid cells (5x5)
-action_size = env.action_space.n  # 4 possible actions (up, down, left, right)
-
-# Build the neural network model
-model = build_model(state_size, action_size)
-
-# Set up the memory
-memory = SequentialMemory(limit=50000, window_length=1)
-
-# Define the exploration policy (epsilon-greedy)
-policy = EpsGreedyQPolicy()
-
-# Create the DQN agent
-dqn_agent = DQNAgent(model=model, 
-                     nb_actions=action_size, 
-                     memory=memory, 
-                     policy=policy, 
-                     nb_steps_warmup=10,  # warmup steps before training starts
-                     target_model_update=1e-2,  # target model update frequency
-                     train_interval=4,  # train every 4 steps
-                     delta_clip=1.0)
-
-# Compile the agent
-dqn_agent.compile(Adam(learning_rate=0.001), metrics=['mae'])
-
-# Train the agent
+# Train the model
 print("Training the agent...")
-dqn_agent.fit(env, nb_steps=10000, visualize=False, verbose=2)
+model.learn(total_timesteps=10000)  # Adjust timesteps for longer training
 
-# Save the trained model weights to an H5 file
-dqn_agent.save_weights("dqn_ga_language_weights.h5", overwrite=True)
-print("Model weights saved as 'dqn_ga_language_weights.h5'.")
+# Save the trained model
+model.save("ga_language_model_dqn")  # Save model weights in H5 format
+print("Model saved as 'ga_language_model_dqn'.")
 
-# To load the weights back, you can use:
-# dqn_agent.load_weights("dqn_ga_language_weights.h5")
-
-# Test the trained agent (after training)
-# dqn_agent.test(env, nb_episodes=5, visualize=True)
 
