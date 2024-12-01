@@ -1,0 +1,55 @@
+# Python bytecode files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Python virtual environments
+venv/
+env/
+ENV/
+.venv/
+.virtualenv/
+
+# Package distribution
+*.egg
+*.egg-info/
+dist/
+build/
+sdist/
+
+# IDE/Editor files
+.vscode/
+.idea/
+*.swp
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Stable-Baselines3 models and outputs
+*.zip
+*.tar.gz
+*.h5
+
+# Dataset files (if any)
+*.csv
+*.json
+*.xlsx
+
+# Environment variable files (if any)
+.env
+
+# macOS system files
+.DS_Store
+
+# Windows system files
+Thumbs.db
+ehthumbs.db
+
