@@ -1,4 +1,3 @@
-Here’s a `README.md` template for your GitHub repository, following the instructions you provided:
 
 ---
 
@@ -43,14 +42,6 @@ cd ga-language-ppo
 pip install -r requirements.txt
 ```
 
-**requirements.txt** should contain:
-
-```
-gym
-stable-baselines3
-matplotlib
-numpy
-```
 
 ## Usage
 
@@ -93,4 +84,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Stable-Baselines3**: For providing the PPO implementation.
 - **Gym**: For creating the environment framework.
 - **Matplotlib**: For visualization of the agent’s actions and the environment.
+
+---
 
