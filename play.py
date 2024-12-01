@@ -1,11 +1,11 @@
 import gym
 import numpy as np
 import matplotlib.pyplot as plt
-from stable_baselines3 import PPO
+from stable_baselines3 import DQN  # Import DQN instead of PPO
 from ga_language_env import GaLanguageEnv  # Custom environment
 
-# Load the trained model
-model = PPO.load("ga_language_model")
+# Load the trained DQN model
+model = DQN.load("ga_language_model_dqn")  # Correct model loading
 
 # Initialize the environment
 env = GaLanguageEnv()
@@ -24,11 +24,11 @@ ax.grid(color='gray', linestyle='--', linewidth=0.5)
 
 # Custom labels for the grid (representing greetings)
 grid_labels = [
-    ["Good Morning", "Ojekoo", "", "", ""],
-    ["Good Afternoon", "Oshewɛɛ", "", "", ""],
-    ["Good Evening", "Minaa Okooo", "", "", ""],
+    ["", "", "", "", "Jɛ fɛɛ"],
+    ["", "Good morning", "", "", ""],
+    ["", "Te teŋ", "", "Good morning", ""],
     ["", "", "", "", ""],
-    ["", "", "", "Goal", ""],
+    ["", "", "", "", "Ojekoo"],
 ]
 
 # Plot custom labels on the grid
